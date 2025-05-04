@@ -486,6 +486,18 @@
             line-height: 1.7;
         }
         
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+        
+        .hero-buttons .cta-button {
+            margin: 0.75rem 0.5rem;
+        }
+        
         .cta-button {
             display: inline-block;
             background-color: var(--secondary-color);
@@ -495,7 +507,6 @@
             text-decoration: none;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.2s;
-            margin: 0.75rem;
         }
         
         .cta-button:hover {
@@ -985,8 +996,10 @@
                 <div class="hero-content">
                     <h2>Building Homes, Building Hope</h2>
                     <p>Join Habitat for Humanity at Pitt and help us create affordable housing opportunities in our community.</p>
-                    <a href="#" class="cta-button" onclick="showPage('about')">Learn More</a>
-                    <a href="#" class="cta-button" onclick="showPage('get-involved')">Join Us</a>
+                    <div class="hero-buttons">
+                        <a href="#" class="cta-button" onclick="showPage('about')">Learn More</a>
+                        <a href="#" class="cta-button" onclick="showPage('get-involved')">Join Us</a>
+                    </div>
                 </div>
             </div>
             
