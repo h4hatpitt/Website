@@ -70,7 +70,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Steel Toe Boots",
                 email: "rjd87@pitt.edu",
-                photoUrl: "Leadership/President.jpg",
+                photoUrl: "President.jpg",
                 type: "board"
             },
             {
@@ -81,7 +81,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Ramset",
                 email: "trz13@pitt.edu",
-                photoUrl: "Leadership/Vice_President.jpg",
+                photoUrl: "Vice_President.jpg",
                 type: "board"
             },
             {
@@ -92,7 +92,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Sawzall",
                 email: "krm211@pitt.edu",
-                photoUrl: "Leadership/Business_Manager.jpg",
+                photoUrl: "Business_Manager.jpg",
                 type: "board"
             },
             {
@@ -103,7 +103,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Chalk Line",
                 email: "nea49@pitt.edu",
-                photoUrl: "Leadership/Workday_Coordinator.jpg",
+                photoUrl: "Workday_Coordinator.jpg",
                 type: "board"
             },
             {
@@ -114,7 +114,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Drill",
                 email: "jjf104@pitt.edu",
-                photoUrl: "Leadership/Secretary.jpg",
+                photoUrl: "Secretary.jpg",
                 type: "board"
             },
             {
@@ -125,7 +125,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Pry Bar",
                 email: "ask139@pitt.edu",
-                photoUrl: "Leadership/Fundraising_Coordinator.jpg",
+                photoUrl: "Fundraising_Coordinator.jpg",
                 type: "board"
             },
             {
@@ -136,7 +136,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Impact Driver",
                 email: "pjs126@pitt.edu",
-                photoUrl: "Leadership/Advocacy_Coordinator.jpg",
+                photoUrl: "Advocacy_Coordinator.jpg",
                 type: "board"
             },
             
@@ -149,7 +149,7 @@
                 pronouns: "she/her",
                 favoriteTool: "",
                 email: "tmm189@pitt.edu",
-                photoUrl: "Leadership/Spring_Service_Trip.jpg",
+                photoUrl: "Spring_Service_Trip.jpg",
                 type: "chair"
             },
             {
@@ -160,7 +160,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Slap Stapler",
                 email: "nac273@pitt.edu",
-                photoUrl: "Leadership/Social_Media.jpg",
+                photoUrl: "Social_Media.jpg",
                 type: "chair"
             },
             {
@@ -171,7 +171,7 @@
                 pronouns: "he/him",
                 favoriteTool: "",
                 email: "jeh298@pitt.edu",
-                photoUrl: "Leadership/Construction.jpg",
+                photoUrl: "Construction.jpg",
                 type: "chair"
             },
             {
@@ -182,7 +182,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Hammer",
                 email: "dbm52@pitt.edu",
-                photoUrl: "Leadership/Education.jpg",
+                photoUrl: "Education.jpg",
                 type: "chair"
             },
             {
@@ -193,7 +193,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Leaf Blower",
                 email: "ldv10@pitt.edu",
-                photoUrl: "Leadership/PR.jpg",
+                photoUrl: "PR.jpg",
                 type: "chair"
             },
             {
@@ -204,7 +204,7 @@
                 pronouns: "he/him",
                 favoriteTool: "",
                 email: "djf116@pitt.edu",
-                photoUrl: "Leadership/Social_Chair.jpg",
+                photoUrl: "Social.jpg",
                 type: "chair"
             },
             {
@@ -226,7 +226,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Nail Gun",
                 email: "bak130@pitt.edu",
-                photoUrl: "Leadership/DEI.jpg",
+                photoUrl: "DEI.jpg",
                 type: "chair"
             }
         ];
@@ -835,6 +835,7 @@
             width: 100%;
         }
         
+        /* Mobile Header Adjustments */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -846,6 +847,7 @@
                 width: 100%;
                 padding: 1.5rem;
                 box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+                z-index: 100;
             }
             
             .nav-links.active {
@@ -879,6 +881,44 @@
             .hero-content {
                 padding: 2rem;
             }
+            
+            /* Improved mobile header */
+            header {
+                padding: 0.75rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                align-items: center;
+                margin-right: 2rem;
+            }
+            
+            .logo img {
+                height: 40px;
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+            
+            .logo h1 {
+                font-size: 1rem;
+                text-align: center;
+            }
+            
+            /* Mobile main content adjustments */
+            main {
+                margin-top: 100px;
+            }
+            
+            /* Mobile carousel adjustments */
+            .carousel-container {
+                padding-top: 75%; /* Adjusted aspect ratio for mobile */
+            }
+            
+            /* Improved calendar container for mobile */
+            .calendar-container {
+                padding-top: 150%; /* Taller on mobile */
+                background-color: #fff;
+            }
         }
     </style>
 </head>
@@ -904,7 +944,7 @@
         </nav>
     </header>
 
-    <main>
+    <main id="main-content">
         <!-- Home Page -->
         <div id="home" class="page active">
             <div class="hero">
@@ -1378,6 +1418,14 @@
         
         // Check URL hash on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're on mobile and adjust the UI accordingly
+            checkMobileView();
+            
+            // Handle resize events
+            window.addEventListener('resize', function() {
+                checkMobileView();
+            });
+            
             // Set up all dynamic content from CONFIG
             setupDynamicContent();
             
@@ -1387,6 +1435,26 @@
                 showPage(hash);
             }
         });
+        
+        // Check and adjust for mobile view
+        function checkMobileView() {
+            const isMobile = window.innerWidth <= 768;
+            const mainContent = document.getElementById('main-content');
+            
+            if (isMobile) {
+                document.body.classList.add('mobile-view');
+                
+                // Adjust main content margin based on header height
+                const headerHeight = document.querySelector('header').offsetHeight;
+                mainContent.style.marginTop = (headerHeight + 20) + 'px';
+            } else {
+                document.body.classList.remove('mobile-view');
+                mainContent.style.marginTop = '120px';
+            }
+            
+            // Refresh calendars when screen size changes
+            setupCalendars();
+        }
         
         // Set up all dynamic content from CONFIG
         function setupDynamicContent() {
@@ -1433,7 +1501,7 @@
             
             // Generate HTML for board members
             boardMembers.forEach(leader => {
-                const photoUrl = leader.photoUrl || '/api/placeholder/250/200';
+                const photoUrl = leader.photoUrl || 'Leadership/default.jpg';
                 
                 boardHTML += `
                     <div class="leader-card">
@@ -1457,7 +1525,7 @@
             
             // Generate HTML for chairs
             chairMembers.forEach(leader => {
-                const photoUrl = leader.photoUrl || '/api/placeholder/250/200';
+                const photoUrl = leader.photoUrl || 'Leadership/default.jpg';
                 
                 chairsHTML += `
                     <div class="leader-card">
@@ -1505,11 +1573,15 @@
             // Base calendar parameters
             const baseParams = "ctz=America%2FNew_York";
             
+            // Check if we're on mobile
+            const isMobile = window.innerWidth <= 768;
+            const mobileParams = isMobile ? "&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" : "";
+            
             // Home page shows all calendars
             const allCalendars = Object.values(CONFIG.GOOGLE_CALENDARS)
                 .map(id => `src=${encodeURIComponent(id)}`)
                 .join('&');
-            const homeCalendarUrl = `https://calendar.google.com/calendar/embed?${allCalendars}&${baseParams}`;
+            const homeCalendarUrl = `https://calendar.google.com/calendar/embed?${allCalendars}&${baseParams}${mobileParams}`;
             
             // Workdays page shows only workday calendar
             const workdaysCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}&${baseParams}&mode=AGENDA`;
@@ -1520,13 +1592,21 @@
             // Fundraising page shows fundraising calendar
             const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA`;
             
-            // Set up calendar iframes
-            homeCalendarContainer.innerHTML = `<iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
-            workdaysCalendarContainer.innerHTML = `<iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
-            getInvolvedCalendarContainer.innerHTML = `<iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+            // Set up calendar iframes with allow="fullscreen" for better mobile compatibility
+            if (homeCalendarContainer) {
+                homeCalendarContainer.innerHTML = `<iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+            }
+            
+            if (workdaysCalendarContainer) {
+                workdaysCalendarContainer.innerHTML = `<iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+            }
+            
+            if (getInvolvedCalendarContainer) {
+                getInvolvedCalendarContainer.innerHTML = `<iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+            }
             
             if (fundraisingCalendarContainer) {
-                fundraisingCalendarContainer.innerHTML = `<iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+                fundraisingCalendarContainer.innerHTML = `<iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
             }
         }
         
