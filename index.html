@@ -743,22 +743,23 @@
             margin-bottom: 0.8rem;
         }
         
+        /* Calendar Container and Toggle Styles */
         .calendar-container {
-            position: relative;
-            overflow: hidden;
-            height: 600px; /* Fixed height instead of padding-top percentage */
+            display: flex;
+            flex-direction: column;
             margin-top: 2.5rem;
             margin-bottom: 2rem;
+            height: auto;
             border-radius: 8px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             background-color: #fff;
-            transition: height 0.3s ease; /* Smooth transition for height changes */
+            overflow: hidden;
         }
 
         .calendar-frame-container {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: 600px; /* Fixed height for desktop */
             overflow: hidden;
         }
 
@@ -769,14 +770,13 @@
             width: 100%;
             height: 100%;
             border: none;
-            border-radius: 8px 8px 0 0; /* Rounded corners only on top */
         }
 
         .calendar-fallback {
             padding: 2rem;
             text-align: center;
             height: 100%;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -788,24 +788,27 @@
             margin-top: 1rem;
         }
 
-        /* Calendar View Toggle Styles */
+        /* Calendar View Toggle Styles - Completely Redesigned */
         .calendar-view-toggle {
             display: flex;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #e9ecef;
             background-color: #f8f9fa;
-            border-radius: 0 0 8px 8px;
+            width: 100%;
         }
 
         .calendar-view-button {
             flex: 1;
-            padding: 10px;
+            padding: 12px 10px;
             background: none;
             border: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s;
             color: var(--accent-color);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .calendar-view-button:hover {
@@ -818,25 +821,29 @@
         }
 
         .calendar-view-button i {
-            margin-right: 5px;
+            margin-right: 8px;
+            font-size: 1.1rem;
         }
 
         /* Mobile adjustments */
         @media (max-width: 768px) {
-            .calendar-container {
-                height: 400px; /* Shorter but still fixed height on mobile */
-                margin-top: 1.5rem;
-                margin-bottom: 1.5rem;
+            .calendar-frame-container {
+                height: 400px; /* Shorter height on mobile */
             }
             
             .calendar-view-button {
-                padding: 8px 5px;
-                font-size: 0.8rem;
+                padding: 10px 5px;
+                font-size: 0.85rem;
             }
             
-            /* Target specific calendar that needs to be taller */
-            #get-involved-calendar-container {
-                height: 300px; /* Custom height for this specific calendar */
+            .calendar-view-button i {
+                margin-right: 5px;
+                font-size: 0.9rem;
+            }
+            
+            /* Custom height for specific calendars */
+            #get-involved-calendar-container .calendar-frame-container {
+                height: 350px;
             }
         }
         
@@ -1030,14 +1037,6 @@
                 margin-bottom: 1.5rem;
             }
             
-            /* Improved calendar container for mobile */
-            .calendar-container {
-                padding-top: 150%; /* Taller on mobile */
-                background-color: #fff;
-                margin-top: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
             /* Smaller social links on mobile */
             .social-links a {
                 width: 45px;
@@ -1181,7 +1180,7 @@
                 
                 <h3>Attend a Meeting</h3>
                 <p>Our general body meetings are open to all students. Check our calendar for the next meeting date:</p>
-                <div class="calendar-container" id="get-involved-calendar-container" style="padding-top: 40%;">
+                <div class="calendar-container" id="get-involved-calendar-container">
                     <!-- Calendar will be inserted here by JavaScript -->
                 </div>
             </section>
@@ -1568,6 +1567,8 @@
         
         // Check URL hash on page load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("Document loaded");
+            
             // Check if we're on mobile and adjust the UI accordingly
             checkMobileView();
             
@@ -1604,17 +1605,14 @@
                 mainContent.style.marginTop = '120px';
             }
             
-            // Only call setupCalendars when actually changing between mobile/desktop
-            // This prevents unnecessary reloading
-            if ((isMobile && !window.wasMobileLastResize) || 
-                (!isMobile && window.wasMobileLastResize)) {
-                setupCalendars();
-                window.wasMobileLastResize = isMobile;
-            }
+            // Force calendar setup
+            setupCalendars();
         }
         
         // Set up all dynamic content from CONFIG
         function setupDynamicContent() {
+            console.log("Setting up dynamic content");
+            
             // Set up calendars
             setupCalendars();
             
@@ -1720,39 +1718,38 @@
             loadImpactStatistics();
         }
         
-        // Set up calendars with fixes for mobile flickering
+        // Set up calendars with simplified approach for better reliability
         function setupCalendars() {
+            console.log("Setting up calendars");
+            
             // Get all calendar containers
-            const calendarContainers = {
-                home: document.getElementById('home-calendar-container'),
-                workdays: document.getElementById('workdays-calendar-container'),
-                getInvolved: document.getElementById('get-involved-calendar-container'),
-                fundraising: document.getElementById('fundraising-calendar-container')
+            const calendarIds = {
+                'home': 'home-calendar-container',
+                'workdays': 'workdays-calendar-container',
+                'getInvolved': 'get-involved-calendar-container', 
+                'fundraising': 'fundraising-calendar-container'
             };
             
             // Base calendar parameters
             const baseParams = "ctz=America%2FNew_York";
             
-            // Check if we're on mobile
-            const isMobile = window.innerWidth <= 768;
-            
-            // Get saved view preference from localStorage or use default
-            const defaultView = isMobile ? 'list' : 'calendar';
-            
-            // Create calendar URLs with both view options
-            Object.keys(calendarContainers).forEach(key => {
-                const container = calendarContainers[key];
-                if (!container) return;
+            // Process each calendar container
+            Object.keys(calendarIds).forEach(key => {
+                const containerId = calendarIds[key];
+                const container = document.getElementById(containerId);
                 
-                // Get saved view preference for this specific calendar
-                const calendarView = localStorage.getItem(`calendar-view-${key}`) || defaultView;
+                if (!container) {
+                    console.log(`Container not found: ${containerId}`);
+                    return;
+                }
                 
-                // Calculate fixed height for the calendar based on screen width and view
-                const containerHeight = isMobile ? '400px' : (calendarView === 'list' ? '500px' : '600px');
+                // Check if we're on mobile
+                const isMobile = window.innerWidth <= 768;
                 
-                // Update container style - IMPORTANT: replace padding with height
-                container.style.height = containerHeight;
-                container.style.paddingTop = '0'; // Remove percentage padding
+                // Get default view based on screen size or saved preference
+                const savedView = localStorage.getItem(`calendar-view-${key}`);
+                const defaultView = isMobile ? 'list' : 'calendar';
+                const calendarView = savedView || defaultView;
                 
                 // Define view parameters based on current view
                 const viewParams = calendarView === 'list' 
@@ -1784,64 +1781,42 @@
                 // Create the full calendar URL
                 const calendarUrl = `https://calendar.google.com/calendar/embed?${calendarSrc}&${baseParams}${viewParams}`;
                 
-                // Check if the container already has our custom view toggle
-                let viewToggleExists = container.querySelector('.calendar-view-toggle');
-                
-                // If no toggle exists, create the entire calendar container with toggle
-                if (!viewToggleExists) {
-                    container.innerHTML = `
-                        <div class="calendar-frame-container" style="height: 100%;">
-                            <iframe 
-                                src="${calendarUrl}" 
-                                frameborder="0" 
-                                scrolling="no" 
-                                style="width: 100%; height: 100%; border: none;"
-                                loading="lazy"
-                                allow="fullscreen">
-                            </iframe>
-                            <div class="calendar-fallback" style="display: none;">
-                                <h3>Calendar not loading?</h3>
-                                <p>You may need to allow cookies from Google Calendar to view this content.</p>
-                                <a href="${directUrl}" target="_blank" class="cta-button">View Calendar Directly</a>
-                            </div>
+                // Create HTML for calendar container
+                const html = `
+                    <div class="calendar-frame-container">
+                        <iframe 
+                            src="${calendarUrl}" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            style="width: 100%; height: 100%; border: none;"
+                            loading="lazy"
+                            allow="fullscreen">
+                        </iframe>
+                        <div class="calendar-fallback">
+                            <h3>Calendar not loading?</h3>
+                            <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                            <a href="${directUrl}" target="_blank" class="cta-button">View Calendar Directly</a>
                         </div>
-                        <div class="calendar-view-toggle">
-                            <button class="calendar-view-button ${calendarView === 'calendar' ? 'active' : ''}" data-view="calendar" data-calendar="${key}">
-                                <i class="fas fa-calendar-alt"></i> Calendar View
-                            </button>
-                            <button class="calendar-view-button ${calendarView === 'list' ? 'active' : ''}" data-view="list" data-calendar="${key}">
-                                <i class="fas fa-list"></i> List View
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Add event listeners to the toggle buttons
-                    const buttons = container.querySelectorAll('.calendar-view-button');
-                    buttons.forEach(button => {
-                        button.addEventListener('click', handleCalendarViewToggle);
-                    });
-                } else {
-                    // If toggle exists, just update the iframe source
-                    const iframe = container.querySelector('iframe');
-                    if (iframe && iframe.src !== calendarUrl) {
-                        iframe.src = calendarUrl;
-                    }
-                    
-                    // Update active button state
-                    const buttons = container.querySelectorAll('.calendar-view-button');
-                    buttons.forEach(button => {
-                        if (button.dataset.view === calendarView) {
-                            button.classList.add('active');
-                        } else {
-                            button.classList.remove('active');
-                        }
-                    });
-                }
+                    </div>
+                    <div class="calendar-view-toggle">
+                        <button class="calendar-view-button ${calendarView === 'calendar' ? 'active' : ''}" data-view="calendar" data-calendar="${key}">
+                            <i class="fas fa-calendar-alt"></i> Calendar View
+                        </button>
+                        <button class="calendar-view-button ${calendarView === 'list' ? 'active' : ''}" data-view="list" data-calendar="${key}">
+                            <i class="fas fa-list"></i> List View
+                        </button>
+                    </div>
+                `;
                 
-                // Check if iframe loaded properly after a delay
-                setTimeout(function() {
-                    checkCalendarLoad(container);
-                }, 2000);
+                // Set the HTML of the container
+                container.innerHTML = html;
+                console.log(`Set up calendar: ${containerId}`);
+                
+                // Add event listeners to the toggle buttons
+                const buttons = container.querySelectorAll('.calendar-view-button');
+                buttons.forEach(button => {
+                    button.addEventListener('click', handleCalendarViewToggle);
+                });
             });
         }
 
@@ -1851,6 +1826,8 @@
             const view = button.dataset.view;
             const calendarKey = button.dataset.calendar;
             
+            console.log(`Toggle clicked: ${calendarKey} to ${view}`);
+            
             // Save preference to localStorage
             localStorage.setItem(`calendar-view-${calendarKey}`, view);
             
@@ -1859,11 +1836,7 @@
             const buttons = container.querySelectorAll('.calendar-view-button');
             
             buttons.forEach(btn => {
-                if (btn === button) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.toggle('active', btn === button);
             });
             
             // Refresh the calendar with the new view
@@ -1884,18 +1857,21 @@
                 // If we can't access contentWindow, it probably means the iframe is blocked by cookies
                 const iframeContent = iframe.contentWindow;
                 if (!iframeContent || !iframeContent.document) {
-                    showCalendarFallback(fallback);
+                    showCalendarFallback(fallback, iframe);
                 }
             } catch (error) {
                 // If there's an error trying to access iframe content, show fallback
-                showCalendarFallback(fallback);
+                showCalendarFallback(fallback, iframe);
             }
         }
         
         // Show calendar fallback content
-        function showCalendarFallback(fallback) {
+        function showCalendarFallback(fallback, iframe) {
+            console.log("Showing calendar fallback");
+            
             if (fallback) {
-                fallback.style.display = 'block';
+                iframe.style.display = 'none';
+                fallback.style.display = 'flex';
             }
         }
 
