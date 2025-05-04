@@ -70,7 +70,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Steel Toe Boots",
                 email: "rjd87@pitt.edu",
-                photoUrl: "President.jpg",
+                photoUrl: "Leadership/President.jpg",
                 type: "board"
             },
             {
@@ -81,7 +81,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Ramset",
                 email: "trz13@pitt.edu",
-                photoUrl: "Vice_President.jpg",
+                photoUrl: "Leadership/Vice_President.jpg",
                 type: "board"
             },
             {
@@ -92,7 +92,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Sawzall",
                 email: "krm211@pitt.edu",
-                photoUrl: "Business_Manager.jpg",
+                photoUrl: "Leadership/Business_Manager.jpg",
                 type: "board"
             },
             {
@@ -103,7 +103,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Chalk Line",
                 email: "nea49@pitt.edu",
-                photoUrl: "Workday_Coordinator.jpg",
+                photoUrl: "Leadership/Workday_Coordinator.jpg",
                 type: "board"
             },
             {
@@ -114,7 +114,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Drill",
                 email: "jjf104@pitt.edu",
-                photoUrl: "Secretary.jpg",
+                photoUrl: "Leadership/Secretary.jpg",
                 type: "board"
             },
             {
@@ -125,7 +125,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Pry Bar",
                 email: "ask139@pitt.edu",
-                photoUrl: "Fundraising_Coordinator.jpg",
+                photoUrl: "Leadership/Fundraising_Coordinator.jpg",
                 type: "board"
             },
             {
@@ -136,7 +136,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Impact Driver",
                 email: "pjs126@pitt.edu",
-                photoUrl: "Advocacy_Coordinator.jpg",
+                photoUrl: "Leadership/Advocacy_Coordinator.jpg",
                 type: "board"
             },
             
@@ -149,7 +149,7 @@
                 pronouns: "she/her",
                 favoriteTool: "",
                 email: "tmm189@pitt.edu",
-                photoUrl: "Spring_Service_Trip.jpg",
+                photoUrl: "Leadership/Spring_Service_Trip.jpg",
                 type: "chair"
             },
             {
@@ -160,7 +160,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Slap Stapler",
                 email: "nac273@pitt.edu",
-                photoUrl: "Social_Media.jpg",
+                photoUrl: "Leadership/Social_Media.jpg",
                 type: "chair"
             },
             {
@@ -171,7 +171,7 @@
                 pronouns: "he/him",
                 favoriteTool: "",
                 email: "jeh298@pitt.edu",
-                photoUrl: "Construction.jpg",
+                photoUrl: "Leadership/Construction.jpg",
                 type: "chair"
             },
             {
@@ -182,7 +182,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Hammer",
                 email: "dbm52@pitt.edu",
-                photoUrl: "Education.jpg",
+                photoUrl: "Leadership/Education.jpg",
                 type: "chair"
             },
             {
@@ -193,7 +193,7 @@
                 pronouns: "he/him",
                 favoriteTool: "Leaf Blower",
                 email: "ldv10@pitt.edu",
-                photoUrl: "PR.jpg",
+                photoUrl: "Leadership/PR.jpg",
                 type: "chair"
             },
             {
@@ -204,7 +204,7 @@
                 pronouns: "he/him",
                 favoriteTool: "",
                 email: "djf116@pitt.edu",
-                photoUrl: "Social.jpg",
+                photoUrl: "Leadership/Social.jpg",
                 type: "chair"
             },
             {
@@ -215,7 +215,7 @@
                 pronouns: "she/her",
                 favoriteTool: "",
                 email: "mag795@pitt.edu",
-                photoUrl: "",
+                photoUrl: "Leadership/Fundraising.jpg",
                 type: "chair"
             },
             {
@@ -226,7 +226,7 @@
                 pronouns: "she/her",
                 favoriteTool: "Nail Gun",
                 email: "bak130@pitt.edu",
-                photoUrl: "DEI.jpg",
+                photoUrl: "Leadership/DEI.jpg",
                 type: "chair"
             }
         ];
@@ -1630,21 +1630,102 @@
             // Fundraising page shows fundraising calendar
             const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA${isMobile ? "&showNav=0&showPrint=0&showTabs=0" : ""}`;
             
+            // Add direct calendar links for fallback
+            const directHomeCalendarUrl = `https://calendar.google.com/calendar/u/0/r?${allCalendars.replace(/src=/g, "cid=")}`;
+            const directWorkdaysCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}`;
+            const directGeneralCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}`;
+            const directFundraisingCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}`;
+            
             // Set up calendar iframes with allow="fullscreen" for better mobile compatibility
+            // Also add fallback content for cookie/load issues
             if (homeCalendarContainer) {
-                homeCalendarContainer.innerHTML = `<iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+                homeCalendarContainer.innerHTML = `
+                    <iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+                    <div class="calendar-fallback" style="display: none;">
+                        <h3>Calendar not loading?</h3>
+                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                        <a href="${directHomeCalendarUrl}" target="_blank">View Calendar Directly</a>
+                    </div>
+                `;
+                
+                // Check if iframe loaded properly after a delay
+                setTimeout(function() {
+                    checkCalendarLoad(homeCalendarContainer);
+                }, 2000);
             }
             
             if (workdaysCalendarContainer) {
-                workdaysCalendarContainer.innerHTML = `<iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+                workdaysCalendarContainer.innerHTML = `
+                    <iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+                    <div class="calendar-fallback" style="display: none;">
+                        <h3>Calendar not loading?</h3>
+                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                        <a href="${directWorkdaysCalendarUrl}" target="_blank">View Workdays Calendar Directly</a>
+                    </div>
+                `;
+                
+                setTimeout(function() {
+                    checkCalendarLoad(workdaysCalendarContainer);
+                }, 2000);
             }
             
             if (getInvolvedCalendarContainer) {
-                getInvolvedCalendarContainer.innerHTML = `<iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+                getInvolvedCalendarContainer.innerHTML = `
+                    <iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+                    <div class="calendar-fallback" style="display: none;">
+                        <h3>Calendar not loading?</h3>
+                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                        <a href="${directGeneralCalendarUrl}" target="_blank">View General Calendar Directly</a>
+                    </div>
+                `;
+                
+                setTimeout(function() {
+                    checkCalendarLoad(getInvolvedCalendarContainer);
+                }, 2000);
             }
             
             if (fundraisingCalendarContainer) {
-                fundraisingCalendarContainer.innerHTML = `<iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen"></iframe>`;
+                fundraisingCalendarContainer.innerHTML = `
+                    <iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+                    <div class="calendar-fallback" style="display: none;">
+                        <h3>Calendar not loading?</h3>
+                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                        <a href="${directFundraisingCalendarUrl}" target="_blank">View Fundraising Calendar Directly</a>
+                    </div>
+                `;
+                
+                setTimeout(function() {
+                    checkCalendarLoad(fundraisingCalendarContainer);
+                }, 2000);
+            }
+        }
+        
+        // Check if calendar iframe loaded properly
+        function checkCalendarLoad(container) {
+            if (!container) return;
+            
+            const iframe = container.querySelector('iframe');
+            const fallback = container.querySelector('.calendar-fallback');
+            
+            if (!iframe || !fallback) return;
+            
+            // Try to access iframe content to check if it loaded
+            try {
+                // If we can't access contentWindow, it probably means the iframe is blocked by cookies
+                const iframeContent = iframe.contentWindow;
+                if (!iframeContent || !iframeContent.document) {
+                    showCalendarFallback(fallback);
+                }
+            } catch (error) {
+                // If there's an error trying to access iframe content, show fallback
+                showCalendarFallback(fallback);
+            }
+        }
+        
+        // Show calendar fallback content
+        function showCalendarFallback(fallback) {
+            if (fallback) {
+                fallback.style.display = 'block';
             }
         }
         
