@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Habitat for Humanity at Pitt</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -875,11 +875,11 @@
             }
             
             section {
-                padding: 1.8rem;
+                padding: 1.5rem;
             }
             
             .hero-content {
-                padding: 2rem;
+                padding: 1.5rem;
             }
             
             /* Improved mobile header */
@@ -890,7 +890,7 @@
             .logo {
                 flex-direction: column;
                 align-items: center;
-                margin-right: 2rem;
+                margin-right: 0;
             }
             
             .logo img {
@@ -907,17 +907,51 @@
             /* Mobile main content adjustments */
             main {
                 margin-top: 100px;
+                padding: 0 15px;
             }
             
             /* Mobile carousel adjustments */
             .carousel-container {
-                padding-top: 75%; /* Adjusted aspect ratio for mobile */
+                padding-top: 66.67%; /* 3:2 aspect ratio for mobile */
+                margin-bottom: 1.5rem;
             }
             
             /* Improved calendar container for mobile */
             .calendar-container {
                 padding-top: 150%; /* Taller on mobile */
                 background-color: #fff;
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            /* Smaller social links on mobile */
+            .social-links a {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            /* Smaller font sizes on mobile */
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            p {
+                font-size: 0.95rem;
+            }
+            
+            /* Smaller padding for leadership cards on mobile */
+            .leader-info {
+                padding: 1.2rem;
+            }
+            
+            /* Fix footer spacing on mobile */
+            footer {
+                padding: 2.5rem 0 1.5rem;
             }
         }
     </style>
@@ -1112,13 +1146,13 @@
                 <div class="carousel-container">
                     <div class="carousel-slides">
                         <div class="carousel-slide active">
-                            <img src="/api/placeholder/1920/1080?text=Fundraising+Event" alt="Fundraising event">
+                            <img src="Photos/Fundraising_1.jpg" alt="Fundraising event at a Panthers game">
                         </div>
                         <div class="carousel-slide">
-                            <img src="/api/placeholder/1920/1080?text=Hot+Dog+Sale" alt="Hot dog sale in South Oakland">
+                            <img src="Photos/Fundraising_2.jpg" alt="Hot dog sale in South Oakland">
                         </div>
                         <div class="carousel-slide">
-                            <img src="/api/placeholder/1920/1080?text=Pitt+Day+of+Giving" alt="Pitt Day of Giving">
+                            <img src="Photos/Fundraising_3.jpg" alt="Pitt Day of Giving">
                         </div>
                     </div>
                     <div class="carousel-controls">
@@ -1575,7 +1609,11 @@
             
             // Check if we're on mobile
             const isMobile = window.innerWidth <= 768;
-            const mobileParams = isMobile ? "&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" : "";
+            
+            // Use different calendar view on mobile
+            const mobileParams = isMobile 
+                ? "&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA"
+                : "";
             
             // Home page shows all calendars
             const allCalendars = Object.values(CONFIG.GOOGLE_CALENDARS)
@@ -1584,13 +1622,13 @@
             const homeCalendarUrl = `https://calendar.google.com/calendar/embed?${allCalendars}&${baseParams}${mobileParams}`;
             
             // Workdays page shows only workday calendar
-            const workdaysCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}&${baseParams}&mode=AGENDA`;
+            const workdaysCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}&${baseParams}&mode=AGENDA${isMobile ? "&showNav=0&showPrint=0&showTabs=0" : ""}`;
             
             // Get involved page shows general meetings
             const getInvolvedCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}&${baseParams}&mode=AGENDA&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
             
             // Fundraising page shows fundraising calendar
-            const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA`;
+            const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA${isMobile ? "&showNav=0&showPrint=0&showTabs=0" : ""}`;
             
             // Set up calendar iframes with allow="fullscreen" for better mobile compatibility
             if (homeCalendarContainer) {
