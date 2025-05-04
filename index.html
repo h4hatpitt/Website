@@ -53,8 +53,8 @@
             // SPRING TRIP INFORMATION - Update with current trip details
             SPRING_TRIP: {
                 DESTINATION: "Cape Fear, NC", 
-                DATE: "March 2026",
-                APPLICATION_DEADLINE: "December 15, 2025"
+                DATE: "March 1 - March 8, 2025",
+                APPLICATION_DEADLINE: "January 25, 2025"
             }
         };
         
@@ -746,13 +746,22 @@
         .calendar-container {
             position: relative;
             overflow: hidden;
-            padding-top: 75%;
+            height: 600px; /* Fixed height instead of padding-top percentage */
             margin-top: 2.5rem;
             margin-bottom: 2rem;
             border-radius: 8px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            background-color: #fff;
+            transition: height 0.3s ease; /* Smooth transition for height changes */
         }
-        
+
+        .calendar-frame-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         .calendar-container iframe {
             position: absolute;
             top: 0;
@@ -760,7 +769,75 @@
             width: 100%;
             height: 100%;
             border: none;
+            border-radius: 8px 8px 0 0; /* Rounded corners only on top */
+        }
+
+        .calendar-fallback {
+            padding: 2rem;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
             border-radius: 8px;
+        }
+
+        .calendar-fallback .cta-button {
+            margin-top: 1rem;
+        }
+
+        /* Calendar View Toggle Styles */
+        .calendar-view-toggle {
+            display: flex;
+            border-top: 1px solid #eee;
+            background-color: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .calendar-view-button {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .calendar-view-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .calendar-view-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-view-button i {
+            margin-right: 5px;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .calendar-container {
+                height: 400px; /* Shorter but still fixed height on mobile */
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .calendar-view-button {
+                padding: 8px 5px;
+                font-size: 0.8rem;
+            }
+            
+            /* Target specific calendar that needs to be taller */
+            #get-involved-calendar-container {
+                height: 300px; /* Custom height for this specific calendar */
+            }
         }
         
         footer {
@@ -1495,9 +1572,11 @@
             checkMobileView();
             
             // Handle resize events
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', debounce(function() {
                 checkMobileView();
-            });
+            }, 250));
+
+            window.wasMobileLastResize = window.innerWidth <= 768;
             
             // Set up all dynamic content from CONFIG
             setupDynamicContent();
@@ -1525,8 +1604,13 @@
                 mainContent.style.marginTop = '120px';
             }
             
-            // Refresh calendars when screen size changes
-            setupCalendars();
+            // Only call setupCalendars when actually changing between mobile/desktop
+            // This prevents unnecessary reloading
+            if ((isMobile && !window.wasMobileLastResize) || 
+                (!isMobile && window.wasMobileLastResize)) {
+                setupCalendars();
+                window.wasMobileLastResize = isMobile;
+            }
         }
         
         // Set up all dynamic content from CONFIG
@@ -1636,12 +1720,15 @@
             loadImpactStatistics();
         }
         
-        // Set up calendars
+        // Set up calendars with fixes for mobile flickering
         function setupCalendars() {
-            const homeCalendarContainer = document.getElementById('home-calendar-container');
-            const workdaysCalendarContainer = document.getElementById('workdays-calendar-container');
-            const getInvolvedCalendarContainer = document.getElementById('get-involved-calendar-container');
-            const fundraisingCalendarContainer = document.getElementById('fundraising-calendar-container');
+            // Get all calendar containers
+            const calendarContainers = {
+                home: document.getElementById('home-calendar-container'),
+                workdays: document.getElementById('workdays-calendar-container'),
+                getInvolved: document.getElementById('get-involved-calendar-container'),
+                fundraising: document.getElementById('fundraising-calendar-container')
+            };
             
             // Base calendar parameters
             const baseParams = "ctz=America%2FNew_York";
@@ -1649,94 +1736,138 @@
             // Check if we're on mobile
             const isMobile = window.innerWidth <= 768;
             
-            // Use different calendar view on mobile
-            const mobileParams = isMobile 
-                ? "&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA"
-                : "";
+            // Get saved view preference from localStorage or use default
+            const defaultView = isMobile ? 'list' : 'calendar';
             
-            // Home page shows all calendars
-            const allCalendars = Object.values(CONFIG.GOOGLE_CALENDARS)
-                .map(id => `src=${encodeURIComponent(id)}`)
-                .join('&');
-            const homeCalendarUrl = `https://calendar.google.com/calendar/embed?${allCalendars}&${baseParams}${mobileParams}`;
-            
-            // Workdays page shows only workday calendar
-            const workdaysCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}&${baseParams}&mode=AGENDA${isMobile ? "&showNav=0&showPrint=0&showTabs=0" : ""}`;
-            
-            // Get involved page shows general meetings
-            const getInvolvedCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}&${baseParams}&mode=AGENDA&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
-            
-            // Fundraising page shows fundraising calendar
-            const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA${isMobile ? "&showNav=0&showPrint=0&showTabs=0" : ""}`;
-            
-            // Add direct calendar links for fallback
-            const directHomeCalendarUrl = `https://calendar.google.com/calendar/u/0/r?${allCalendars.replace(/src=/g, "cid=")}`;
-            const directWorkdaysCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}`;
-            const directGeneralCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}`;
-            const directFundraisingCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}`;
-            
-            // Set up calendar iframes with allow="fullscreen" for better mobile compatibility
-            // Also add fallback content for cookie/load issues
-            if (homeCalendarContainer) {
-                homeCalendarContainer.innerHTML = `
-                    <iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
-                    <div class="calendar-fallback" style="display: none;">
-                        <h3>Calendar not loading?</h3>
-                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
-                        <a href="${directHomeCalendarUrl}" target="_blank">View Calendar Directly</a>
-                    </div>
-                `;
+            // Create calendar URLs with both view options
+            Object.keys(calendarContainers).forEach(key => {
+                const container = calendarContainers[key];
+                if (!container) return;
+                
+                // Get saved view preference for this specific calendar
+                const calendarView = localStorage.getItem(`calendar-view-${key}`) || defaultView;
+                
+                // Calculate fixed height for the calendar based on screen width and view
+                const containerHeight = isMobile ? '400px' : (calendarView === 'list' ? '500px' : '600px');
+                
+                // Update container style - IMPORTANT: replace padding with height
+                container.style.height = containerHeight;
+                container.style.paddingTop = '0'; // Remove percentage padding
+                
+                // Define view parameters based on current view
+                const viewParams = calendarView === 'list' 
+                    ? "&showNav=0&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA" 
+                    : "";
+                
+                // Define calendar source based on which calendar
+                let calendarSrc;
+                let directUrl;
+                
+                if (key === 'home') {
+                    // Home page shows all calendars
+                    const allCalendars = Object.values(CONFIG.GOOGLE_CALENDARS)
+                        .map(id => `src=${encodeURIComponent(id)}`)
+                        .join('&');
+                    calendarSrc = `${allCalendars}`;
+                    directUrl = `https://calendar.google.com/calendar/u/0/r?${allCalendars.replace(/src=/g, "cid=")}`;
+                } else if (key === 'workdays') {
+                    calendarSrc = `src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}`;
+                    directUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}`;
+                } else if (key === 'getInvolved') {
+                    calendarSrc = `src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}`;
+                    directUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}`;
+                } else if (key === 'fundraising') {
+                    calendarSrc = `src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}`;
+                    directUrl = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}`;
+                }
+                
+                // Create the full calendar URL
+                const calendarUrl = `https://calendar.google.com/calendar/embed?${calendarSrc}&${baseParams}${viewParams}`;
+                
+                // Check if the container already has our custom view toggle
+                let viewToggleExists = container.querySelector('.calendar-view-toggle');
+                
+                // If no toggle exists, create the entire calendar container with toggle
+                if (!viewToggleExists) {
+                    container.innerHTML = `
+                        <div class="calendar-frame-container" style="height: 100%;">
+                            <iframe 
+                                src="${calendarUrl}" 
+                                frameborder="0" 
+                                scrolling="no" 
+                                style="width: 100%; height: 100%; border: none;"
+                                loading="lazy"
+                                allow="fullscreen">
+                            </iframe>
+                            <div class="calendar-fallback" style="display: none;">
+                                <h3>Calendar not loading?</h3>
+                                <p>You may need to allow cookies from Google Calendar to view this content.</p>
+                                <a href="${directUrl}" target="_blank" class="cta-button">View Calendar Directly</a>
+                            </div>
+                        </div>
+                        <div class="calendar-view-toggle">
+                            <button class="calendar-view-button ${calendarView === 'calendar' ? 'active' : ''}" data-view="calendar" data-calendar="${key}">
+                                <i class="fas fa-calendar-alt"></i> Calendar View
+                            </button>
+                            <button class="calendar-view-button ${calendarView === 'list' ? 'active' : ''}" data-view="list" data-calendar="${key}">
+                                <i class="fas fa-list"></i> List View
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add event listeners to the toggle buttons
+                    const buttons = container.querySelectorAll('.calendar-view-button');
+                    buttons.forEach(button => {
+                        button.addEventListener('click', handleCalendarViewToggle);
+                    });
+                } else {
+                    // If toggle exists, just update the iframe source
+                    const iframe = container.querySelector('iframe');
+                    if (iframe && iframe.src !== calendarUrl) {
+                        iframe.src = calendarUrl;
+                    }
+                    
+                    // Update active button state
+                    const buttons = container.querySelectorAll('.calendar-view-button');
+                    buttons.forEach(button => {
+                        if (button.dataset.view === calendarView) {
+                            button.classList.add('active');
+                        } else {
+                            button.classList.remove('active');
+                        }
+                    });
+                }
                 
                 // Check if iframe loaded properly after a delay
                 setTimeout(function() {
-                    checkCalendarLoad(homeCalendarContainer);
+                    checkCalendarLoad(container);
                 }, 2000);
-            }
+            });
+        }
+
+        // Function to handle view toggle button clicks
+        function handleCalendarViewToggle(event) {
+            const button = event.currentTarget;
+            const view = button.dataset.view;
+            const calendarKey = button.dataset.calendar;
             
-            if (workdaysCalendarContainer) {
-                workdaysCalendarContainer.innerHTML = `
-                    <iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
-                    <div class="calendar-fallback" style="display: none;">
-                        <h3>Calendar not loading?</h3>
-                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
-                        <a href="${directWorkdaysCalendarUrl}" target="_blank">View Workdays Calendar Directly</a>
-                    </div>
-                `;
-                
-                setTimeout(function() {
-                    checkCalendarLoad(workdaysCalendarContainer);
-                }, 2000);
-            }
+            // Save preference to localStorage
+            localStorage.setItem(`calendar-view-${calendarKey}`, view);
             
-            if (getInvolvedCalendarContainer) {
-                getInvolvedCalendarContainer.innerHTML = `
-                    <iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
-                    <div class="calendar-fallback" style="display: none;">
-                        <h3>Calendar not loading?</h3>
-                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
-                        <a href="${directGeneralCalendarUrl}" target="_blank">View General Calendar Directly</a>
-                    </div>
-                `;
-                
-                setTimeout(function() {
-                    checkCalendarLoad(getInvolvedCalendarContainer);
-                }, 2000);
-            }
+            // Update UI immediately for better UX
+            const container = button.closest('.calendar-container');
+            const buttons = container.querySelectorAll('.calendar-view-button');
             
-            if (fundraisingCalendarContainer) {
-                fundraisingCalendarContainer.innerHTML = `
-                    <iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
-                    <div class="calendar-fallback" style="display: none;">
-                        <h3>Calendar not loading?</h3>
-                        <p>You may need to allow cookies from Google Calendar to view this content.</p>
-                        <a href="${directFundraisingCalendarUrl}" target="_blank">View Fundraising Calendar Directly</a>
-                    </div>
-                `;
-                
-                setTimeout(function() {
-                    checkCalendarLoad(fundraisingCalendarContainer);
-                }, 2000);
-            }
+            buttons.forEach(btn => {
+                if (btn === button) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Refresh the calendar with the new view
+            setupCalendars();
         }
         
         // Check if calendar iframe loaded properly
@@ -1766,6 +1897,18 @@
             if (fallback) {
                 fallback.style.display = 'block';
             }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
         }
         
         // Load impact statistics either from CONFIG or Google Sheets
