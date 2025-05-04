@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habitat for Humanity at Pitt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- 
+    ==========================================================================
+    CONFIGURATION SECTION - UPDATE THESE VALUES TO MANAGE YOUR WEBSITE CONTENT
+    ==========================================================================
+    -->
+    <script>
+        // CONTACT INFORMATION
+        const CONFIG = {
+            // Email address that will appear in footer and contact areas
+            EMAIL: "pitthabitat@gmail.com",
+            
+            // SOCIAL MEDIA - Update with your actual social media URLs (include https://)
+            INSTAGRAM_URL: "https://www.instagram.com/h4hatpitt",
+            FACEBOOK_URL: "https://www.facebook.com/panther.habitat",
+            LINKEDIN_URL: "https://www.linkedin.com/groups/10061393/",
+            
+            // GROUPME - Update with your GroupMe join link
+            // How to get this: Open your GroupMe group → Share → Copy Link
+            GROUPME_URL: "https://groupme.com/join_group/61980948/yQvkSe07",
+            
+            // GOOGLE CALENDARS - Update with your Google Calendar IDs
+            // How to get these: In Google Calendar → Settings → Integrate calendar → Copy "Calendar ID"
+            GOOGLE_CALENDARS: {
+                GENERAL: "6dffb7554969c2d869fa7a64c985247d80e090f60a0fb335e569f760bba66524@group.calendar.google.com",
+                WORKDAYS: "41fb293a5565609e8ab14c65c024411847adf2d5ce28e0f913830366a920cd96@group.calendar.google.com",
+                FUNDRAISING: "2d30fafcdce34b46bd680f4f2e27b86c45f869a31718767da920ea99b11f4ea7@group.calendar.google.com",
+                ADVOCACY: "0e18e721dd8ab82951eba9f3f9e028ca7025ac0556879596ffa6693ad3ad2fef@group.calendar.google.com"
+            },
+            
+            // GOOGLE FORM - Update with your Google Form embed ID
+            // How to get this: In Google Forms → Send → <> Embed → Copy the ID from the src attribute
+            GOOGLE_FORM_ID: "1FAIpQLSd81zw6COHQgz15EUg8LiEww9FbYN5YuD45uHBtN1A56vkFNg",
+            
+            // IMPACT STATISTICS - Update these numbers directly
+            // These values will be used unless you enable the Google Sheets integration
+            VOLUNTEER_HOURS: 1250,
+            FUNDS_RAISED: 8750,
+            
+            // GOOGLE SHEETS API (OPTIONAL) - For automatically updating impact statistics
+            // To use: Set USE_GOOGLE_SHEETS to true and provide your Sheet ID and API Key
+            USE_GOOGLE_SHEETS: true,
+            GOOGLE_SHEET_ID: "1ArgkBST2PKDFUUPSIwh56XzYUjfFhcqk-BSgU3VvOOU",
+            GOOGLE_SHEETS_API_KEY: "AIzaSyCusor4qzbb6A6Dj5jJKiWKGpXJ9GYTFIo",
+            
+            // SPRING TRIP INFORMATION - Update with current trip details
+            SPRING_TRIP: {
+                DESTINATION: "Cape Fear, NC", 
+                DATE: "March 2026",
+                APPLICATION_DEADLINE: "December 15, 2025"
+            }
+        };
+        
+        // LEADERSHIP TEAM - Update with current leadership information
+        // Format: {name: "Name", position: "Position Title", year: "Year", major: "Major", pronouns: "Pronouns", favoriteTool: "Favorite Tool", email: "email@pitt.edu", photoUrl: "URL or leave blank for default", type: "board/chair"}
+        const leadershipTeam = [
+            // Board Members
+            {
+                name: "Rex Dube",
+                position: "President",
+                year: "Senior",
+                major: "Civil Engineering",
+                pronouns: "he/him",
+                favoriteTool: "Steel Toe Boots",
+                email: "rjd87@pitt.edu",
+                photoUrl: "Leadership/President.jpg",
+                type: "board"
+            },
+            {
+                name: "Tal Zicklin",
+                position: "Vice President",
+                year: "Junior", 
+                major: "Emergency Medicine",
+                pronouns: "she/her",
+                favoriteTool: "Ramset",
+                email: "trz13@pitt.edu",
+                photoUrl: "Leadership/Vice_President.jpg",
+                type: "board"
+            },
+            {
+                name: "Kristina Marticek",
+                position: "Business Manager",
+                year: "Junior", 
+                major: "Emergency Medicine",
+                pronouns: "she/her",
+                favoriteTool: "Sawzall",
+                email: "krm211@pitt.edu",
+                photoUrl: "Leadership/Business_Manager.jpg",
+                type: "board"
+            },
+            {
+                name: "Norah Alavi",
+                position: "Workday Coordinator",
+                year: "Senior", 
+                major: "Environmental Engineering",
+                pronouns: "she/her",
+                favoriteTool: "Chalk Line",
+                email: "nea49@pitt.edu",
+                photoUrl: "Leadership/Workday_Coordinator.jpg",
+                type: "board"
+            },
+            {
+                name: "Julia Fitzgerald",
+                position: "Secretary",
+                year: "Senior", 
+                major: "Industrial Engineering",
+                pronouns: "she/her",
+                favoriteTool: "Drill",
+                email: "jjf104@pitt.edu",
+                photoUrl: "Leadership/Secretary.jpg",
+                type: "board"
+            },
+            {
+                name: "Ashleigh Kafka",
+                position: "Fundraising Coordinator",
+                year: "Senior", 
+                major: "Neuroscience",
+                pronouns: "she/her",
+                favoriteTool: "Pry Bar",
+                email: "ask139@pitt.edu",
+                photoUrl: "Leadership/Fundraising_Coordinator.jpg",
+                type: "board"
+            },
+            {
+                name: "Pierce Shipp",
+                position: "Advocacy Coordinator",
+                year: "Junior", 
+                major: "Bioengineering",
+                pronouns: "he/him",
+                favoriteTool: "Impact Driver",
+                email: "pjs126@pitt.edu",
+                photoUrl: "Leadership/Advocacy_Coordinator.jpg",
+                type: "board"
+            },
+            
+            // Chairs
+            {
+                name: "Trinity Munsisoumang",
+                position: "Spring Service Trip Chair",
+                year: "Senior", 
+                major: "",
+                pronouns: "she/her",
+                favoriteTool: "",
+                email: "tmm189@pitt.edu",
+                photoUrl: "Leadership/Spring_Service_Trip.jpg",
+                type: "chair"
+            },
+            {
+                name: "Neve Chachanashvili",
+                position: "Social Media Chair",
+                year: "Sophomore", 
+                major: "Biological Sciences",
+                pronouns: "she/her",
+                favoriteTool: "Slap Stapler",
+                email: "nac273@pitt.edu",
+                photoUrl: "Leadership/Social_Media.jpg",
+                type: "chair"
+            },
+            {
+                name: "Josh Hamilton",
+                position: "Construction Chair",
+                year: "Senior", 
+                major: "Mechanical Engineering",
+                pronouns: "he/him",
+                favoriteTool: "",
+                email: "jeh298@pitt.edu",
+                photoUrl: "Leadership/Construction.jpg",
+                type: "chair"
+            },
+            {
+                name: "Dylan Matthew",
+                position: "Education Chair",
+                year: "Senior", 
+                major: "Neuroscience",
+                pronouns: "he/him",
+                favoriteTool: "Hammer",
+                email: "dbm52@pitt.edu",
+                photoUrl: "Leadership/Education.jpg",
+                type: "chair"
+            },
+            {
+                name: "Lucas Varley",
+                position: "Public Relations Chair",
+                year: "Junior", 
+                major: "Industrial Engineering",
+                pronouns: "he/him",
+                favoriteTool: "Leaf Blower",
+                email: "ldv10@pitt.edu",
+                photoUrl: "Leadership/PR.jpg",
+                type: "chair"
+            },
+            {
+                name: "Daniel Frie",
+                position: "Social Chair",
+                year: "Junior", 
+                major: "",
+                pronouns: "he/him",
+                favoriteTool: "",
+                email: "djf116@pitt.edu",
+                photoUrl: "Leadership/Social_Chair.jpg",
+                type: "chair"
+            },
+            {
+                name: "Mariel Gulla",
+                position: "Fundraising Chair",
+                year: "Sophomore", 
+                major: "Nursing",
+                pronouns: "she/her",
+                favoriteTool: "",
+                email: "mag795@pitt.edu",
+                photoUrl: "",
+                type: "chair"
+            },
+            {
+                name: "Baradhi Kumar",
+                position: "Diversity, Equity, and Inclusion Chair",
+                year: "Senior", 
+                major: "Molecular Biology and Psychology",
+                pronouns: "she/her",
+                favoriteTool: "Nail Gun",
+                email: "bak130@pitt.edu",
+                photoUrl: "Leadership/DEI.jpg",
+                type: "chair"
+            }
+        ];
+    </script>
+    
+    <style>
+        :root {
+            /* University of Pittsburgh Official Colors */
+            --primary-color: #003594; /* Pitt Royal Blue */
+            --secondary-color: #FFB81C; /* Pitt Gold */
+            --accent-color: #4A6387; /* Pitt Secondary Blue */
+            --dark-color: #1C2957; /* Darker Blue */
+            --light-color: #f6f7eb; /* Light Background */
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            /* Aspect ratio using padding technique - 16:9 ratio */
+            padding-top: 56.25%;
+            height: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .carousel-slides {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-color: var(--light-color);
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .carousel-prev, .carousel-next {
+            background-color: rgba(0, 53, 148, 0.7);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .carousel-prev:hover, .carousel-next:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            gap: 8px;
+            margin: 0 15px;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .indicator.active {
+            background-color: var(--secondary-color);
+            transform: scale(1.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 1.25rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 0.5rem; /* Added padding */
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 45px; /* Reduced from 50px */
+            margin-right: 10px; /* Reduced from 15px */
+        }
+        
+        .logo h1 {
+            font-size: 1.3rem; /* Reduced from 1.5rem */
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem; /* Reduced from 2rem */
+        }
+        
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a:hover {
+            color: var(--dark-color);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 120px auto 60px;
+            padding: 0 25px;
+        }
+        
+        section {
+            margin-bottom: 3.5rem;
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Pages - All initially hidden */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .hero {
+            position: relative;
+            height: 450px;
+            background-image: url('/api/placeholder/1200/450');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 53, 148, 0.7); /* Pitt Blue with opacity */
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 3rem;
+        }
+        
+        .hero h2 {
+            font-size: 2.75rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            line-height: 1.7;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 0.9rem 2.2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 0.75rem;
+        }
+        
+        .cta-button:hover {
+            background-color: #F5A800; /* Slightly darker gold */
+            transform: translateY(-3px);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.8rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            font-size: 2rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        h3 {
+            margin-top: 2.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--accent-color);
+            font-size: 1.4rem;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.8rem;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 3rem 0;
+        }
+        
+        .stat-box {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 48%;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box h3 {
+            font-size: 2.75rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+        
+        .signup-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .submit-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 1rem 2.2rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-button:hover {
+            background-color: #38506B; /* Darker accent */
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            margin: 0 0.8rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-5px);
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .leadership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2.5rem;
+        }
+        
+        .leadership-section {
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+        
+        .leadership-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.8rem;
+            display: inline-block;
+        }
+        
+        .leader-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border: 1px solid #eee;
+        }
+        
+        .leader-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        
+        .leader-image {
+            position: relative;
+            width: 100%;
+            padding-top: 80%; /* This creates a 5:4 aspect ratio container */
+            overflow: hidden;
+            background-color: var(--accent-color); /* Fallback color */
+        }
+        
+        .leader-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center; /* Focus on top portion where faces are */
+            transition: transform 0.3s ease; /* Smooth zoom effect on hover */
+        }
+        
+        .leader-card:hover .leader-image img {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+        
+        .leader-info {
+            padding: 1.8rem;
+        }
+        
+        .leader-info h3 {
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-size: 1.4rem;
+        }
+        
+        .leader-info p.position {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .leader-details {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .leader-details span {
+            display: inline-block;
+            background-color: var(--light-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            margin-right: 0.6rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .calendar-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 75%;
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .calendar-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 3.5rem 0 2rem;
+            margin-top: 5rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+        
+        .footer-logo {
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 220px;
+            margin-bottom: 2rem;
+            text-align: left;
+            padding: 0 20px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-section a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+        
+        .footer-section a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            border-top: 1px solid #444;
+            padding-top: 1.5rem;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                background-color: var(--secondary-color);
+                width: 100%;
+                padding: 1.5rem;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 0.8rem 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-box {
+                width: 100%;
+            }
+            
+            .footer-section {
+                flex: 100%;
+            }
+            
+            section {
+                padding: 1.8rem;
+            }
+            
+            .hero-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="Logo.png" alt="Habitat Logo">
+                <h1>Habitat for Humanity at Pitt</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About Us</a></li>
+                <li><a href="#" onclick="showPage('get-involved')">Get Involved</a></li>
+                <li><a href="#" onclick="showPage('workdays')">Workdays</a></li>
+                <li><a href="#" onclick="showPage('fundraising')">Fundraising</a></li>
+                <li><a href="#" onclick="showPage('spring-trip')">Spring Trip</a></li>
+                <li><a href="#" onclick="showPage('leadership')">Leadership</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h2>Building Homes, Building Hope</h2>
+                    <p>Join Habitat for Humanity at Pitt and help us create affordable housing opportunities in our community.</p>
+                    <a href="#" class="cta-button" onclick="showPage('about')">Learn More</a>
+                    <a href="#" class="cta-button" onclick="showPage('get-involved')">Join Us</a>
+                </div>
+            </div>
+            
+            <section>
+                <h2>Our Impact</h2>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <h3 id="volunteer-hours">0</h3>
+                        <p>Volunteer Hours Completed This Year</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3 id="funds-raised">$0</h3>
+                        <p>Funds Raised This Year</p>
+                    </div>
+                </div>
+                <p>Habitat for Humanity at Pitt is dedicated to eliminating substandard housing through constructing, rehabilitating and preserving homes; by advocating for fair and just housing policies; and by providing training and access to resources to help families improve their shelter conditions.</p>
+            </section>
+            
+            <section>
+                <h2>Photo Gallery</h2>
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <img src="Photos/General_1.jpeg" alt="Building the habishack on the WPU lawn for awareness.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/General_2.jpeg" alt="Volunteer using a sawzall on a workday.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/General_3.jpeg" alt="Volunteers having fun on the spring service trip.">
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-prev">&lt;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                        </div>
+                        <button class="carousel-next">&gt;</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2>Upcoming Events</h2>
+                <div class="calendar-container" id="home-calendar-container">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </div>
+        
+        <!-- Get Involved Page -->
+        <div id="get-involved" class="page">
+            <section>
+                <h2>Get Involved</h2>
+                <p>Join Habitat for Humanity at Pitt and make a difference in our community! There are many ways to get involved with our chapter, from volunteering at workdays to participating in fundraising events.</p>
+                
+                <h3>Join Our Email List</h3>
+                <p>Stay updated on events, workdays, and opportunities by joining our email list:</p>
+                <div class="signup-form" id="google-form-container">
+                    <!-- Google Form will be inserted here by JavaScript -->
+                </div>
+                
+                <h3>Connect With Us</h3>
+                <p>Join our GroupMe for more immediate updates and community discussions:</p>
+                <div class="signup-form">
+                    <a href="#" id="groupme-link" class="cta-button" style="display: block; text-align: center; margin: 1.5rem auto;">Join our GroupMe Chat</a>
+                </div>
+                
+                <h3>Follow Us on Social Media</h3>
+                <p>Follow us to see our latest projects and events:</p>
+                <div class="social-links" id="social-links-container">
+                    <!-- Social links will be inserted here by JavaScript -->
+                </div>
+                
+                <h3>Attend a Meeting</h3>
+                <p>Our general body meetings are open to all students. Check our calendar for the next meeting date:</p>
+                <div class="calendar-container" id="get-involved-calendar-container" style="padding-top: 40%;">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </div>
+
+        <!-- About Us Page -->
+        <div id="about" class="page">
+            <section>
+                <h2>About Habitat for Humanity at Pitt</h2>
+                <p>We are the campus extension of the national Habitat for Humanity organization, focused on making affordable housing a reality in our community.</p>
+                
+                <p>Our main focus are <a href="#" onclick="showPage('workdays')">workdays</a> which are days where we do construction volunteer work with <a href="https://www.armstronghabitat.org" target="_blank">Armstrong County Habitat for Humanity</a>, <a href="https://habitatav.org/" target="_blank">Allegheny Valley Habitat for Humanity</a>, and <a href="https://openhandpgh.org/" target="_blank">Open Hand Ministries</a> to further the affordable housing mission of Habitat for Humanity. Most of the work is renovation of old homes that will be sold to families for a more affordable price.</p>
+                
+                <p>We also have a <a href="#" onclick="showPage('spring-trip')">spring service trip</a> where we travel to a different part of the country to work with <a href="https://www.capefearhabitat.org/" target="_blank">Cape Fear Habitat for Humanity</a>.</p>
+                
+                <p>We fundraise to make our workdays and spring service trip possible, and we do community outreach to build a like-minded community in our club as well as the city as a whole! We do this through social events as well as advocacy events.</p>
+                
+                <h3>Join Us</h3>
+                <p>All students are welcome to join us! We have no required level of commitment and all majors are welcome. In addition, no construction skills are necessary - we'll teach you everything you need to know! <a href="#" onclick="showPage('get-involved')">Sign up for our email list</a> to get started!</p>
+                
+                <h3>Our Impact in Photos</h3>
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <img src="Photos/General_1.jpeg" alt="Building the habishack on the WPU lawn for awareness.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/General_2.jpeg" alt="Volunteer using a sawzall on a workday.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/General_3.jpeg" alt="Volunteers having fun on the spring service trip.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/General_4.jpeg" alt="2025 Spring service trip.">
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-prev">&lt;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                            <span class="indicator" data-slide="3"></span>
+                        </div>
+                        <button class="carousel-next">&gt;</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Leadership Page -->
+        <div id="leadership" class="page">
+            <section>
+                <h2>Our Leadership Team</h2>
+                <p>Meet the dedicated students who lead Habitat for Humanity at Pitt. Our executive board and committee chairs work tirelessly to organize workdays, fundraising events, and community outreach initiatives.</p>
+                
+                <div class="leadership-section">
+                    <h3>Executive Board</h3>
+                    <div class="leadership-grid" id="board-grid">
+                        <!-- Board member cards will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="leadership-section">
+                    <h3>Committee Chairs</h3>
+                    <div class="leadership-grid" id="chairs-grid">
+                        <!-- Chair cards will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Fundraising Page -->
+        <div id="fundraising" class="page">
+            <section>
+                <h2>Fundraising Efforts</h2>
+                <!-- Image carousel -->
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <img src="/api/placeholder/1920/1080?text=Fundraising+Event" alt="Fundraising event">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="/api/placeholder/1920/1080?text=Hot+Dog+Sale" alt="Hot dog sale in South Oakland">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="/api/placeholder/1920/1080?text=Pitt+Day+of+Giving" alt="Pitt Day of Giving">
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-prev">&lt;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                        </div>
+                        <button class="carousel-next">&gt;</button>
+                    </div>
+                </div>
+                
+                <p>Our fundraising initiatives help support our <a href="#" onclick="showPage('workdays')">workdays</a> and <a href="#" onclick="showPage('spring-trip')">spring service trip</a>, allowing us to make a bigger impact in our community.</p>
+                
+                <div class="stats-container">
+                    <div class="stat-box" style="width: 100%;">
+                        <h3 id="funds-raised-2">$0</h3>
+                        <p>Funds Raised This Year</p>
+                    </div>
+                </div>
+                
+                <h3>How Your Contribution Helps</h3>
+                <p>Your donations and participation in our fundraising events directly supports:</p>
+                <ul>
+                    <li>Transportation to <a href="#" onclick="showPage('workdays')">workdays</a></li>
+                    <li>Construction materials and tools</li>
+                    <li>Our annual <a href="#" onclick="showPage('spring-trip')">spring service trip</a></li>
+                    <li>Community outreach events</li>
+                </ul>
+
+                <h3>Current Fundraising Initiatives</h3>
+                <p>Throughout the year, we organize various fundraising events to support our mission. We also conduct an online donation campaign called engage, partake in Pitt's online donation campagin, Pitt Day of Giving, hold fundraising events at nearly every Pittsburgh sporting event, and occasional hot dog sales in South Oakland. Check out our calendar for upcoming events!</p>
+                
+                <div class="calendar-container" id="fundraising-calendar-container">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+                
+                <h3>Support Our Cause</h3>
+                <p>Want to make a direct donation to support our efforts? Contact our <a href="#" onclick="showPage('leadership')">Fundraising Coordinator</a> for more information!</p>
+            </section>
+        </div>
+
+        <!-- Workdays Page -->
+        <div id="workdays" class="page">
+            <section>
+                <h2>Workday Efforts</h2>
+                <!-- Image carousel -->
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <img src="Photos/Workday_1.jpeg" alt="Volunteer working on gutters at our Open Hand Ministries workday.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Workday_2.jpeg" alt="Volunteers creating a gutter at our Open Hand Ministries workday.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Workday_3.JPG" alt="Volunteers doing demolition work at our Armstrong County Habitat for Humanity workday.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Workday_4.jpeg" alt="Volunteer doing demolition work at our Armstrong County Habitat for Humanity workday.">
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-prev">&lt;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                            <span class="indicator" data-slide="3"></span>
+                        </div>
+                        <button class="carousel-next">&gt;</button>
+                    </div>
+                </div>
+                
+                <p>Workdays are the heart of what we do at Habitat for Humanity at Pitt. These are days where we engage in hands-on construction and renovation work in the Pittsburgh area.</p>
+                
+                <!-- Moved the volunteer hours banner higher on the page -->
+                <div class="stat-box" style="width: 100%; margin: 1.5rem 0 2.5rem;">
+                    <h3 id="volunteer-hours-2">0</h3>
+                    <p>Volunteer Hours Completed This Year</p>
+                </div>
+                
+                <h3>What Are Workdays?</h3>
+                <p>Workdays are volunteer construction opportunities where we work on homes with our partners: <a href="https://www.armstronghabitat.org" target="_blank">Armstrong County Habitat for Humanity</a>, <a href="https://habitatav.org/" target="_blank">Allegheny Valley Habitat for Humanity</a>, and <a href="https://openhandpgh.org/" target="_blank">Open Hand Ministries</a>. Most of our work involves renovating older homes that will be sold to families at affordable prices.</p>
+                
+                <h3>What to Expect</h3>
+                <p>On a typical workday:</p>
+                <ul>
+                    <li>We meet on campus and travel to the work site together</li>
+                    <li>Professional construction supervisors provide guidance and instruction</li>
+                    <li>Tasks range from painting and basic carpentry to demolition and renovation</li>
+                    <li>All necessary tools and safety equipment are provided</li>
+                    <li>No prior construction experience is needed!</li>
+                </ul>
+                
+                <h3>Upcoming Workdays</h3>
+                <p>Check our calendar for upcoming workday opportunities:</p>
+                <div class="calendar-container" id="workdays-calendar-container">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Spring Trip Page -->
+        <div id="spring-trip" class="page">
+            <section>
+                <h2>Spring Service Trip</h2>
+                <!-- Image carousel -->
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <img src="Photos/Spring_Break_1.jpeg" alt="Volunteers installing green board at a house in Cape Fear, NC.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Spring_Break_2.jpeg" alt="Volunteers installing the top plate of a wall at a house in Cape Fear, NC.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Spring_Break_3.jpeg" alt="Volunteer installing hurricane straps at a house in Cape Fear, NC.">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="Photos/Spring_Break_4.JPG" alt="2025 Spring service trip group photo.">
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-prev">&lt;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                            <span class="indicator" data-slide="3"></span>
+                        </div>
+                        <button class="carousel-next">&gt;</button>
+                    </div>
+                </div>
+                
+                <p>Each spring break, we embark on a week-long service trip to work with a Habitat for Humanity affiliate in another part of the country.</p>
+                
+                <h3>About the Trip</h3>
+                <p>Our annual spring break trip is an intensive, immersive experience where we:</p>
+                <ul>
+                    <li>Travel to a location with significant housing needs</li>
+                    <li>Work for a full week on construction projects</li>
+                    <li>Connect with local communities and understand their housing challenges</li>
+                    <li>Build lasting friendships within our club</li>
+                </ul>
+                
+                <h3>Previous Destinations</h3>
+                <p>For the past few years, we have traveled to <a href="https://www.capefearhabitat.org/" target="_blank">Cape Fear Habitat for Humanity</a> in North Carolina and formed a strong partnership with their local affiliate.</p>
+                
+                <h3>This Year's Trip</h3>
+                <div id="spring-trip-info" style="background-color: #f8f9fa; padding: 1.8rem; border-radius: 8px; margin: 1.5rem 0 2.5rem;">
+                    <!-- Spring trip info will be inserted here by JavaScript -->
+                </div>
+                
+                <h3>How to Participate</h3>
+                <p>Spring trip participation is open to all club members, but spaces are limited. Participants are selected based on participation in club activities including workdays and fundraising events. It is a lifechanging experience that most members would recommend you partake in. Please learn more about the trip and apply by joining our club and attending our meetings!</p>
+                
+                <p>The trip is heavily subsidized through our fundraising efforts, making it affordable for student participants. Interested in joining? <a href="#" onclick="showPage('get-involved')">Get involved</a> with our chapter today!</p>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">Habitat for Humanity at Pitt</div>
+                <p>University of Pittsburgh<br>Pittsburgh, PA 15213</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#" onclick="showPage('home')">Home</a></li>
+                    <li><a href="#" onclick="showPage('about')">About Us</a></li>
+                    <li><a href="#" onclick="showPage('get-involved')">Get Involved</a></li>
+                    <li><a href="#" onclick="showPage('workdays')">Workdays</a></li>
+                    <li><a href="#" onclick="showPage('fundraising')">Fundraising</a></li>
+                    <li><a href="#" onclick="showPage('spring-trip')">Spring Trip</a></li>
+                    <li><a href="#" onclick="showPage('leadership')">Leadership</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul id="footer-contact-links">
+                    <!-- Contact links will be inserted here by JavaScript -->
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="https://www.habitat.org/" target="_blank">Habitat for Humanity International</a></li>
+                    <li><a href="https://www.armstronghabitat.org" target="_blank">Armstrong County Habitat for Humanity</a></li>
+                    <li><a href="https://habitatav.org/" target="_blank">Allegheny Valley Habitat for Humanity</a></li>
+                    <li><a href="https://openhandpgh.org/" target="_blank">Open Hand Ministries</a></li>
+                    <li><a href="https://www.capefearhabitat.org/" target="_blank">Cape Fear Habitat for Humanity</a></li>
+                    <li><a href="https://www.studentaffairs.pitt.edu/ccld/" target="_blank">Pitt Student Organizations</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                &copy; <span id="current-year"></span> Habitat for Humanity at the University of Pittsburgh. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Set current year in copyright
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Mobile navigation
+        document.getElementById('hamburger').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        // Image Carousel Functionality
+        $(document).ready(function() {
+            // Initialize all carousels on the page
+            $('.carousel-container').each(function() {
+                const $carousel = $(this);
+                const $slides = $carousel.find('.carousel-slide');
+                const slideCount = $slides.length;
+                let currentIndex = 0;
+                
+                // Set up auto-rotation
+                let interval = setInterval(nextSlide, 5000);
+                
+                // Functions to handle slide transitions
+                function showSlide(index) {
+                    $slides.removeClass('active');
+                    $carousel.find('.indicator').removeClass('active');
+                    
+                    // Handle wrapping around
+                    if (index >= slideCount) index = 0;
+                    if (index < 0) index = slideCount - 1;
+                    
+                    currentIndex = index;
+                    $slides.eq(currentIndex).addClass('active');
+                    $carousel.find('.indicator').eq(currentIndex).addClass('active');
+                }
+                
+                function nextSlide() {
+                    showSlide(currentIndex + 1);
+                }
+                
+                function prevSlide() {
+                    showSlide(currentIndex - 1);
+                }
+                
+                // Event listeners for controls
+                $carousel.find('.carousel-next').on('click', function() {
+                    clearInterval(interval);
+                    nextSlide();
+                    interval = setInterval(nextSlide, 5000);
+                });
+                
+                $carousel.find('.carousel-prev').on('click', function() {
+                    clearInterval(interval);
+                    prevSlide();
+                    interval = setInterval(nextSlide, 5000);
+                });
+                
+                $carousel.find('.indicator').on('click', function() {
+                    clearInterval(interval);
+                    const index = $(this).data('slide');
+                    showSlide(index);
+                    interval = setInterval(nextSlide, 5000);
+                });
+                
+                // Pause rotation when hovering
+                $carousel.hover(
+                    function() { clearInterval(interval); },
+                    function() { interval = setInterval(nextSlide, 5000); }
+                );
+            });
+        });
+        
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Close mobile menu if open
+            document.querySelector('.nav-links').classList.remove('active');
+            
+            // Update URL hash
+            window.location.hash = pageId;
+        }
+        
+        // Check URL hash on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up all dynamic content from CONFIG
+            setupDynamicContent();
+            
+            // Check URL hash and navigate to appropriate page
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showPage(hash);
+            }
+        });
+        
+        // Set up all dynamic content from CONFIG
+        function setupDynamicContent() {
+            // Set up calendars
+            setupCalendars();
+            
+            // Set up Google Form
+            const googleFormContainer = document.getElementById('google-form-container');
+            googleFormContainer.innerHTML = `<iframe src="https://docs.google.com/forms/d/e/${CONFIG.GOOGLE_FORM_ID}/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>`;
+            
+            // Set up GroupMe link
+            const groupmeLink = document.getElementById('groupme-link');
+            groupmeLink.href = CONFIG.GROUPME_URL;
+            
+            // Set up social links
+            const socialLinksContainer = document.getElementById('social-links-container');
+            socialLinksContainer.innerHTML = `
+                <a href="${CONFIG.INSTAGRAM_URL}" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="${CONFIG.FACEBOOK_URL}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="${CONFIG.LINKEDIN_URL}" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="${CONFIG.GROUPME_URL}" target="_blank"><i class="fas fa-users"></i></a>
+            `;
+            
+            // Set up contact links in footer
+            const footerContactLinks = document.getElementById('footer-contact-links');
+            footerContactLinks.innerHTML = `
+                <li><a href="mailto:${CONFIG.EMAIL}"><i class="fas fa-envelope"></i> ${CONFIG.EMAIL}</a></li>
+                <li><a href="${CONFIG.INSTAGRAM_URL}" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li><a href="${CONFIG.FACEBOOK_URL}" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                <li><a href="${CONFIG.LINKEDIN_URL}" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a></li>
+                <li><a href="${CONFIG.GROUPME_URL}" target="_blank"><i class="fas fa-users"></i> GroupMe</a></li>
+            `;
+            
+            // Set up leadership grids - separate into board and chairs
+            const boardGrid = document.getElementById('board-grid');
+            const chairsGrid = document.getElementById('chairs-grid');
+            
+            let boardHTML = '';
+            let chairsHTML = '';
+            
+            // Filter and sort the leadership team by type and position order
+            const boardMembers = leadershipTeam.filter(leader => leader.type === 'board');
+            const chairMembers = leadershipTeam.filter(leader => leader.type === 'chair');
+            
+            // Generate HTML for board members
+            boardMembers.forEach(leader => {
+                const photoUrl = leader.photoUrl || '/api/placeholder/250/200';
+                
+                boardHTML += `
+                    <div class="leader-card">
+                        <div class="leader-image">
+                            <img src="${photoUrl}" alt="${leader.name}">
+                        </div>
+                        <div class="leader-info">
+                            <h3>${leader.name}</h3>
+                            <p class="position">${leader.position}</p>
+                            <div class="leader-details">
+                                <span>${leader.year}</span>
+                                <span>${leader.major}</span>
+                                <span>${leader.pronouns}</span>
+                                <span>❤️ ${leader.favoriteTool}</span>
+                            </div>
+                            <p><a href="mailto:${leader.email}">${leader.email}</a></p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Generate HTML for chairs
+            chairMembers.forEach(leader => {
+                const photoUrl = leader.photoUrl || '/api/placeholder/250/200';
+                
+                chairsHTML += `
+                    <div class="leader-card">
+                        <div class="leader-image">
+                            <img src="${photoUrl}" alt="${leader.name}">
+                        </div>
+                        <div class="leader-info">
+                            <h3>${leader.name}</h3>
+                            <p class="position">${leader.position}</p>
+                            <div class="leader-details">
+                                <span>${leader.year}</span>
+                                <span>${leader.major}</span>
+                                <span>${leader.pronouns}</span>
+                                <span>❤️ ${leader.favoriteTool}</span>
+                            </div>
+                            <p><a href="mailto:${leader.email}">${leader.email}</a></p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            boardGrid.innerHTML = boardHTML;
+            chairsGrid.innerHTML = chairsHTML;
+            
+            // Set up spring trip info
+            const springTripInfo = document.getElementById('spring-trip-info');
+            springTripInfo.innerHTML = `
+                <p><strong>Destination:</strong> ${CONFIG.SPRING_TRIP.DESTINATION}</p>
+                <p><strong>When:</strong> ${CONFIG.SPRING_TRIP.DATE}</p>
+                <p><strong>Application Deadline:</strong> ${CONFIG.SPRING_TRIP.APPLICATION_DEADLINE}</p>
+                <p>Join our email list to be notified when applications open!</p>
+            `;
+            
+            // Load impact statistics
+            loadImpactStatistics();
+        }
+        
+        // Set up calendars
+        function setupCalendars() {
+            const homeCalendarContainer = document.getElementById('home-calendar-container');
+            const workdaysCalendarContainer = document.getElementById('workdays-calendar-container');
+            const getInvolvedCalendarContainer = document.getElementById('get-involved-calendar-container');
+            const fundraisingCalendarContainer = document.getElementById('fundraising-calendar-container');
+            
+            // Base calendar parameters
+            const baseParams = "ctz=America%2FNew_York";
+            
+            // Home page shows all calendars
+            const allCalendars = Object.values(CONFIG.GOOGLE_CALENDARS)
+                .map(id => `src=${encodeURIComponent(id)}`)
+                .join('&');
+            const homeCalendarUrl = `https://calendar.google.com/calendar/embed?${allCalendars}&${baseParams}`;
+            
+            // Workdays page shows only workday calendar
+            const workdaysCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.WORKDAYS)}&${baseParams}&mode=AGENDA`;
+            
+            // Get involved page shows general meetings
+            const getInvolvedCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.GENERAL)}&${baseParams}&mode=AGENDA&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
+            
+            // Fundraising page shows fundraising calendar
+            const fundraisingCalendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(CONFIG.GOOGLE_CALENDARS.FUNDRAISING)}&${baseParams}&mode=AGENDA`;
+            
+            // Set up calendar iframes
+            homeCalendarContainer.innerHTML = `<iframe src="${homeCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+            workdaysCalendarContainer.innerHTML = `<iframe src="${workdaysCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+            getInvolvedCalendarContainer.innerHTML = `<iframe src="${getInvolvedCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+            
+            if (fundraisingCalendarContainer) {
+                fundraisingCalendarContainer.innerHTML = `<iframe src="${fundraisingCalendarUrl}" frameborder="0" scrolling="no"></iframe>`;
+            }
+        }
+        
+        // Load impact statistics either from CONFIG or Google Sheets
+        function loadImpactStatistics() {
+            if (CONFIG.USE_GOOGLE_SHEETS) {
+                fetchSheetData();
+            } else {
+                // Use values directly from CONFIG
+                updateStatistics(CONFIG.VOLUNTEER_HOURS, CONFIG.FUNDS_RAISED);
+            }
+        }
+        
+        // Fetch data from Google Sheets (if enabled)
+        async function fetchSheetData() {
+            try {
+                // Only attempt to fetch from Google Sheets if enabled
+                if (!CONFIG.USE_GOOGLE_SHEETS) return;
+                
+                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.GOOGLE_SHEET_ID}/values/Sheet1!A1:B2?key=${CONFIG.GOOGLE_SHEETS_API_KEY}`);
+                const data = await response.json();
+                
+                // Process and display data
+                const volunteerHours = parseInt(data.values[0][1]);
+                const fundsRaised = parseInt(data.values[1][1]);
+                
+                updateStatistics(volunteerHours, fundsRaised);
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                // Fallback to CONFIG values if Google Sheets fetch fails
+                updateStatistics(CONFIG.VOLUNTEER_HOURS, CONFIG.FUNDS_RAISED);
+            }
+        }
+        
+        // Update statistics in all locations
+        function updateStatistics(volunteerHours, fundsRaised) {
+            document.getElementById('volunteer-hours').textContent = volunteerHours.toLocaleString();
+            document.getElementById('volunteer-hours-2').textContent = volunteerHours.toLocaleString();
+            
+            document.getElementById('funds-raised').textContent = '$' + fundsRaised.toLocaleString();
+            document.getElementById('funds-raised-2').textContent = '$' + fundsRaised.toLocaleString();
+        }
+        
+        // Refresh data periodically (every 5 minutes) if using Google Sheets
+        if (CONFIG.USE_GOOGLE_SHEETS) {
+            setInterval(fetchSheetData, 300000);
+        }
+    </script>
+</body>
+</html>
