@@ -1466,6 +1466,8 @@
         document.getElementById('hamburger').addEventListener('click', function() {
             document.querySelector('.nav-links').classList.toggle('active');
         });
+
+        window.wasMobileLastResize = window.innerWidth <= 768;
         
         // Image Carousel Functionality
         $(document).ready(function() {
@@ -1554,6 +1556,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log("Document loaded");
             
+            // Initialize mobile state
+            window.wasMobileLastResize = window.innerWidth <= 768;
+            
             // Check if we're on mobile and adjust the UI accordingly
             checkMobileView();
             
@@ -1561,8 +1566,6 @@
             window.addEventListener('resize', debounce(function() {
                 checkMobileView();
             }, 250));
-
-            window.wasMobileLastResize = window.innerWidth <= 768;
             
             // Set up all dynamic content from CONFIG
             setupDynamicContent();
@@ -1590,8 +1593,13 @@
                 mainContent.style.marginTop = '120px';
             }
             
-            // Force calendar setup
-            setupCalendars();
+            // Only rebuild calendars if we've crossed the mobile/desktop threshold
+            if (isMobile !== window.wasMobileLastResize) {
+                console.log("Layout changed from " + (window.wasMobileLastResize ? "mobile" : "desktop") + 
+                            " to " + (isMobile ? "mobile" : "desktop") + ", rebuilding calendars");
+                setupCalendars();
+                window.wasMobileLastResize = isMobile;
+            }
         }
         
         // Set up all dynamic content from CONFIG
